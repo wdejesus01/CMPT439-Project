@@ -1,21 +1,9 @@
-
-# Table of Contents
-
-1.  [Requirements](#org8e5167d)
-
-
-
-<a id="org8e5167d"></a>
-
-# Requirements
-
 -   System should be able to solve systems of $n$ linear algebraic equations with
     $n$ unknowns
--   System should utilize
-    -   Gauss-Seidel iterative method (with approximate MAE and RMSE and true MAE and RMSE
-        stopping criteria)
-    -   Jacobi iterative method (with approximate MAE and RMSE and true MAE and RMSE
-        stopping criteria)
+-   System should utilize (with approximate MAE and RMSE and true MAE and RMSE
+    stopping criteria)
+    -   Gauss-Seidel iterative method
+    -   Jacobi iterative method
 -   User should be able to:
     -   Enter an augmented matrix of a system or load it from a text file
     -   Choose between previously mentioned methods
