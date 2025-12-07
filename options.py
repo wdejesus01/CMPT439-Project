@@ -61,5 +61,7 @@ class Options:
         else:  
             print(f"Initial approximation size {len(init_aprox)} does not match "
                   f"dimension {self._dimension}. Defaulting to ones().")
+            self._init_aprox = np.ones(self._dimension)
+
 
 
