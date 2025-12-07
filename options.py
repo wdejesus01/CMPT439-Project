@@ -22,10 +22,10 @@ class Options:
         # runtime options
         self._dimension = dimension
         self._threshold = threshold
-        # if user doesn't supply initial approximation, use ones()
-        if init_aprox is None:
+        # if user doesn't supply initial approximation or is not the right size: supply default
+        if init_aprox is None or len(init_aprox) != self._dimension:
             self._init_aprox = np.ones(dimension)
-        else:
+        else: 
             self._init_aprox = np.array(init_aprox)
     
 
