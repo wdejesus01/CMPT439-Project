@@ -56,4 +56,10 @@ class Options:
         self._threshold = threshold
 
     def setInitAprox(self, init_aprox: Sequence):
-        self._init_aprox = np.array(init_aprox)
+        if len(init_aprox) == self._dimension:
+            self._init_aprox = np.array(init_aprox)
+        else:  
+            print(f"Initial approximation size {len(init_aprox)} does not match "
+                  f"dimension {self._dimension}. Defaulting to ones().")
+
+
