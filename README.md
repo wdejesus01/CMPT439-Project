@@ -1,11 +1,11 @@
 
 # Table of Contents
 
-1.  [Implementation Details](#org92349d1)
-    1.  [Front Page](#org323855f)
-        1.  [Matrix](#orga0f62b2)
-        2.  [Buttons](#org67c3976)
-        3.  [Options](#orgd78ea12)
+1.  [Implementation Details](#org8bb6d1c)
+    1.  [Front Page](#org917287f)
+        1.  [Matrix](#org8022e61)
+        2.  [Buttons](#org625fe05)
+        3.  [Options](#org38eecdf)
 
 -   System should be able to solve systems of $n$ linear algebraic equations with
     $n$ unknowns
@@ -27,7 +27,7 @@
     -   True mean absolute error
 
 
-<a id="org92349d1"></a>
+<a id="org8bb6d1c"></a>
 
 # Implementation Details
 
@@ -35,12 +35,12 @@
 -   **GUI Framework:** tkinter
 
 
-<a id="org323855f"></a>
+<a id="org917287f"></a>
 
 ## Front Page
 
 
-<a id="orga0f62b2"></a>
+<a id="org8022e61"></a>
 
 ### Matrix
 
@@ -51,7 +51,7 @@
     -   The n x n matrix representing the coefficient matrix
 
 
-<a id="org67c3976"></a>
+<a id="org625fe05"></a>
 
 ### Buttons
 
@@ -66,7 +66,7 @@
     -   Open's file navigation application for OS for GUI selection
     -   File should be csved formatted file whose columns are no greater
         than n + 1
-        -   Exception may be handled as [solve](#org33e95b4) usage or time of reading
+        -   Exception may be handled as [solve](#org6159255) usage or time of reading
             file
     -   Stores contents into corresponding matrix and proceed to solve
         matrix
@@ -75,18 +75,18 @@
 
     -   Opens menu to with input fields to enter values for
         respective option
-    -   Save button to store new values into [variables](#orgd78ea12)
-    -   Back button to go back to [main page](#org323855f)
+    -   Save button to store new values into [variables](#org38eecdf)
+    -   Back button to go back to [main page](#org917287f)
 
 3.  Solve
 
-    -   Takes matrix from either user entered [matrix](#orga0f62b2) or [file](#org177a410)
-        and appropriate [options](#orgd78ea12) as arguments for respective [method](#orgae7974f)
+    -   Takes matrix from either user entered [matrix](#org8022e61) or [file](#org5edb308)
+        and appropriate [options](#org38eecdf) as arguments for respective [method](#org22a4a3a)
     -   Return solution vector and error to be displayed either back
-        on main [main page](#org323855f) or in a new window
+        on main [main page](#org917287f) or in a new window
 
 
-<a id="orgd78ea12"></a>
+<a id="org38eecdf"></a>
 
 ### Options
 
@@ -94,31 +94,36 @@
 
     -   Function corresponding to either Jacobi or Gauss-Seidel
         function as defined in your code
-        -   Your function parameters should be in the following order
-            if you want your code to function by default else you will
-            have to alter some things:
-            1.  Matrix
-            2.  Threshold
-            3.  Stopping Criteria
+    -   Your function parameters names should be in the following convention 
+        
+            #Coefficient matrix, constant vector, initial approximations, error method, threshold 
+            def func_nam(coe_matrix, c_vec, init_aprox, error, threshold):
 
-2.  Error
+2.  Threshold
 
-    -   Either a function, string or integer that will determine the
-        function to calculate error for a value gotten as a result of
-        [method](#orgae7974f)
+    -   A floating point variable to which the result of the [error](#orgc23e446) 
+        method will be compared to determine termination of [method](#org22a4a3a)
 
-3.  Threshold
+3.  Size
 
-    -   A floating point variable to which the result of the [error](#org52f8cf0) 
-        method will be compared to determine termination of [method](#orgae7974f)
+    -   A integer that determines the dimensions of the square
+        coefficient [matrix](#org8022e61)
 
-4.  Size
+4.  Starting Approximation
 
-    -   A integer that determines the dimensions of [matrix](#orga0f62b2)
+    -   A list of floating point values who's size corresponds to the [size](#org80f6be9) of the
+        square coefficient matrix
+    -   Defaults to all ones unless user provides alternative
 
-5.  Starting Approximation
+5.  Error Method
 
-    -   A vector of size n initialized at index $n_i$ to some floating
-        point number
-        -   where n is the [size](#orgbefd6c4)
+    -   The method by which the error is calculated
+    -   A enumeration where
+        -   Approximate mean absolute error(MAE) = 0
+        -   Approximate root mean square error(RMSE) = 1
+        -   True mean absolute error(MAE) = 2
+        -   True root mean square error(RMSE) = 3
+    -   You will have to define a case match in your own code
+        for each integer value and the usage of the corresponding
+        error method
 
