@@ -3,6 +3,7 @@ from tkinter import ttk
 from typing import Sequence, Callable
 import numpy as np
 
+# --- Options Class --- # 
 class Options:
     """
     Options for a user to call an iterative method with.
@@ -64,4 +65,41 @@ class Options:
             self._init_aprox = np.ones(self._dimension)
 
 
+# ---Options  window---  #
+root= Tk()
+root.title("Options")
+mainframe = ttk.Frame(root).grid(column=0, row=0)
 
+# --- Grid Headers --- #
+opt_header = ttk.Label(mainframe, text="Options")
+cur_val = ttk.Label(mainframe, text= "Current Value") 
+set_val = ttk.Label(mainframe, text= "New Value")
+headers =  [opt_header, cur_val, set_val]
+for i in range(len(headers)):
+   headers[i].grid(row = 0, column=i)
+
+# --- Options Column  --- #
+#Tuple(immutable) of option names
+options = ("Iterative Method",
+                "Error Equation",
+                "Dimension",
+                "Initial Approximates",
+                "Threshold")
+for i in range(len(options)):
+    ttk.Label(mainframe, text=options[i]).grid(row=i+1, column=0)
+
+# --- Current Values Column --- #
+# value labels with textvariable set to 
+
+
+
+
+
+
+
+# One row for for each options attribute
+# 1st column of row is a label displaying attribute name
+# 2nd column of row is a label displaing current attribute value
+# 3rd column is a interactable widget that will take input and set a new value 
+
+root.mainloop() # Start event loop
