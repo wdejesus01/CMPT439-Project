@@ -1,4 +1,7 @@
-from tkinter import *
+import re
+from methods import *
+import tkinter as  tk
+from tkinter import * 
 from tkinter import ttk
 from typing import Sequence, Callable
 import numpy as np
@@ -11,7 +14,7 @@ class Options:
 
     def __init__(self,
                  iter_func: Callable,
-                 err_func: Callable,
+                 err_func: int=0,
                  dimension: int = 3,
                  threshold: float = 1.0e-3,
                  init_aprox: Sequence = None):
@@ -21,7 +24,7 @@ class Options:
         # error metric function
         self._err_func = err_func
         # runtime options
-        self._dimension = dimension
+        self._dimension = tk.IntVar(value=dimension)
         self._threshold = threshold
         # if user doesn't supply initial approximation or is not the right size: supply default
         if init_aprox is None or len(init_aprox) != self._dimension:
@@ -65,18 +68,26 @@ class Options:
             self._init_aprox = np.ones(self._dimension)
 
 
-# ---Options  window---  #
+# One row for for each options attribute
+# 1st column of row is a label displaying attribute name
+# 2nd column of row is a label displaing current attribute value
+# 3rd column is a interactable widget that will take input and set a new value 
+
+# ---Options  window & Frame---  #
 root= Tk()
 root.title("Options")
-mainframe = ttk.Frame(root).grid(column=0, row=0)
+root.columnconfigure(0, weight=1)
+mainframe = ttk.Frame(root)
+mainframe.grid(column=0, row=0)
 
 # --- Grid Headers --- #
 opt_header = ttk.Label(mainframe, text="Options")
 cur_val = ttk.Label(mainframe, text= "Current Value") 
 set_val = ttk.Label(mainframe, text= "New Value")
 headers =  [opt_header, cur_val, set_val]
-for i in range(len(headers)):
-   headers[i].grid(row = 0, column=i)
+for i, header in enumerate(headers):
+   header.grid(row = 0, column=i,sticky='NE')
+   mainframe.columnconfigure(i, weight=1) # Resizable columns
 
 # --- Options Column  --- #
 #Tuple(immutable) of option names
@@ -85,11 +96,28 @@ options = ("Iterative Method",
                 "Dimension",
                 "Initial Approximates",
                 "Threshold")
-for i in range(len(options)):
+for i, option in enumerate(options):
     ttk.Label(mainframe, text=options[i]).grid(row=i+1, column=0)
 
 # --- Current Values Column --- #
 # value labels with textvariable set to 
+test = Options(jacobi)
+ttk.Label(mainframe, textvariable=test.getDimension()).grid(column=1, row=2)
+
+# --- New Value Column--- #
+
+def floatP(entry):
+    """Validates floating point strings"""
+   return re.fullmatch("^[0-9]+\.?[0-9]*$", entry) is not None 
+floatP_wrapper = (mainframe.register(floatP), '%P')
+
+def intP(entry):
+    """Validates Integer Strings"""
+    return re.fullmatch("^[0-9]+$", entry) is not None and len(entry) > 6 #Arbiturary limit 
+intP_wrapper = (mainframe.register(intP), '%P')
+
+threshhold=ttk.Entry(mainframe, validate='key', validatecommand=floatP_wrapper) 
+dimension=ttk.Entry(mainframe, validate='key', validatecommand=intP_wrapper)
 
 
 
@@ -97,9 +125,12 @@ for i in range(len(options)):
 
 
 
-# One row for for each options attribute
-# 1st column of row is a label displaying attribute name
-# 2nd column of row is a label displaing current attribute value
-# 3rd column is a interactable widget that will take input and set a new value 
+
+
+
+
+
+
+
 
 root.mainloop() # Start event loop
