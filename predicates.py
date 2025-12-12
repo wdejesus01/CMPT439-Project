@@ -1,26 +1,17 @@
-# For all functions we are going to assume that we have identified the coefficient matrix and constant vector
-# From augmented matrix
+import numpy as np
+from numpy import ndarray
 
-# Checks if coefficient matrix is a square matrix or not 
-def is_square(coe_matrix: ndarray):
-    rows,columns = coe_matrix.shape #Storing dimensions of matrix
-    if rows == columns: 
-        return True
-    else: return False
-
-# Checks if coefficient matrix is diagnoally dominant
-def is_diag_dom(coe_matrix: ndarray):
-    #Take the summation of a row not including the pivot
-    def row_sum(vec: ndarray,pivot: int) -> float: 
-        total=0
-        for j in range(cmax): 
-            if(j != pivot):
-                total += abs(vec[j])
-        return total
-    #For all rows, compare the row summation to the pivot value
-    # If greater than, the matrix is not diagonally dominant
+def is_diag_dom(coe_matrix: ndarray) -> bool:
+    """
+    Checks if the coefficient matrix is diagonally dominant.
+    Returns True if it is, False otherwise.
+    """
+    rmax, cmax = coe_matrix.shape
+    if rmax != cmax:
+        raise ValueError("Matrix must be square to check diagonal dominance")
+    def row_sum(vec: ndarray, pivot: int) -> float:
+        return sum(abs(vec[j]) for j in range(cmax) if j != pivot)
     for i in range(rmax):
-        if abs(coe_matrix[i,i]) < row_sum(aug_matrix[i], i):
-            return False 
-    return True 
-
+        if abs(coe_matrix[i, i]) < row_sum(coe_matrix[i], i):
+            return False
+    return True
