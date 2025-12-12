@@ -19,24 +19,38 @@ error_map = {
     "True Root Mean Square Error": 3
 }
 
-# Example usage:
-selected_error_name = options1.getErrFunc().get()  # e.g., "Mean Absolute Approximate Error"
-selected_error_code = error_map[selected_error_name]  # returns 0 for the above
-root = tk.Tk()
-root.title('Welcome to the linear algebraic equations solver')
-label = tk.Label(root, text="Please click one of the following")
-op1 = tk.Button(root, text="option1",command=root.destroy)
-op1.pack()
-op2 = tk.Button(root, text="option2",command=root.destroy)
-op2.pack()
+# --- Main Page --- #
+class MainPage(ttk.Frame):
+    def __init__(self, parent, options_instance, show_options_callback):
+        super().__init__(parent, padding=20)
+        ttk.Label(self, text="Main Page", font=("Arial", 16)).pack(pady=20)
+        ttk.Button(self, text="Go to Options", command=show_options_callback).pack()
 
-op3 = tk.Button(root, text="option3",command=root.destroy)
-op3.pack()
-op4 = tk.Button(root, text="option4",command=root.destroy)
-op4.pack()
-label.pack()
-root.mainloop()
+# --- Main App --- #
+class App(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("App with Options")
+        self.geometry("800x500")
 
-"""
+        self.options = Options()
 
-"""
+        # Frames
+        self.main_page = MainPage(self, self.options, self.show_options)
+        self.options_page = OptionsFrame(self, self.options, self.show_main)
+
+        self.main_page.pack(fill="both", expand=True)
+
+    def show_options(self):
+        self.main_page.pack_forget()
+        self.options_page.pack(fill="both", expand=True)
+
+    def show_main(self):
+        self.options_page.pack_forget()
+        self.main_page.pack(fill="both", expand=True)
+
+# Run the app
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
+
