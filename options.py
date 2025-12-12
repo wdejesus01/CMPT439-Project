@@ -11,26 +11,27 @@ class Options:
     """
     Options for a user to call an iterative method with.
     """
-
     def __init__(self,
-                 iter_func: Callable,
-                 err_func: int=0,
+                 iter_func: str = "Jacobi",
+                 err_func: str="Mean Absolute Approximate Error",
                  dimension: int = 3,
                  threshold: float = 1.0e-3,
                  init_aprox: Sequence = None):
 
         # method used (jacobi, gauss_seidel, etc.)
-        self._iter_func = iter_func
+        self._iter_func = tk.StringVar(value=iter_func)
         # error metric function
-        self._err_func = err_func
+        self._err_func = tk.StringVar(value=err_func)
         # runtime options
         self._dimension = tk.IntVar(value=dimension)
-        self._threshold = threshold
+        self._threshold = tk.DoubleVar(value=threshold)
         # if user doesn't supply initial approximation or is not the right size: supply default
         if init_aprox is None or len(init_aprox) != self._dimension:
             self._init_aprox = np.ones(dimension)
         else: 
             self._init_aprox = np.array(init_aprox)
+
+     #  self._dimension.trace_add("write",
     
 
     # ------------ Getters ----------------
@@ -45,20 +46,10 @@ class Options:
     def getInitAprox(self):
         return self._init_aprox
     # ------------ Setters ----------------
-    def setIterFunc(self, func: Callable):
-        self._iter_func = func
-
-    def setErrFunc(self, func: Callable):
-        self._err_func = func
-
     def setDimension(self, dimension: int):
         self._dimension = dimension
         # update init vector size accordingly
         self._init_aprox = np.ones(dimension)
-
-    def setThreshold(self, threshold: float):
-        self._threshold = threshold
-
     def setInitAprox(self, init_aprox: Sequence):
         if len(init_aprox) == self._dimension:
             self._init_aprox = np.array(init_aprox)
@@ -66,7 +57,6 @@ class Options:
             print(f"Initial approximation size {len(init_aprox)} does not match "
                   f"dimension {self._dimension}. Defaulting to ones().")
             self._init_aprox = np.ones(self._dimension)
-
 
 # One row for for each options attribute
 # 1st column of row is a label displaying attribute name
@@ -80,6 +70,7 @@ root.columnconfigure(0, weight=1)
 mainframe = ttk.Frame(root)
 mainframe.grid(column=0, row=0)
 
+test = Options()
 # --- Grid Headers --- #
 opt_header = ttk.Label(mainframe, text="Options")
 cur_val = ttk.Label(mainframe, text= "Current Value") 
@@ -108,29 +99,69 @@ ttk.Label(mainframe, textvariable=test.getDimension()).grid(column=1, row=2)
 
 def floatP(entry):
     """Validates floating point strings"""
-   return re.fullmatch("^[0-9]+\.?[0-9]*$", entry) is not None 
+    return re.fullmatch("^[0-9]+\\.?[0-9]*$", entry) is not None 
 floatP_wrapper = (mainframe.register(floatP), '%P')
 
 def intP(entry):
     """Validates Integer Strings"""
-    return re.fullmatch("^[0-9]+$", entry) is not None and len(entry) > 6 #Arbiturary limit 
+    return re.fullmatch("^[0-9]*$", entry) is not None and len(entry) < 6 #Arbiturary limit 
 intP_wrapper = (mainframe.register(intP), '%P')
 
-threshhold=ttk.Entry(mainframe, validate='key', validatecommand=floatP_wrapper) 
-dimension=ttk.Entry(mainframe, validate='key', validatecommand=intP_wrapper)
+threshold=ttk.Entry(mainframe, textvariable=test.getThreshold(), validate='key', validatecommand=floatP_wrapper) 
+threshold.grid(column=2, row=5)
+dimension=ttk.Entry(mainframe,textvariable=test.getDimension(), validate='key', validatecommand=intP_wrapper)
+dimension.grid(column=2, row=3)
 
+# --- Method Selection Widgets --- #
+method = StringVar()
+jacobi = ttk.Radiobutton(mainframe, text="Jacobi",variable=test.getIterFunc(), value="Jacobi")
+gauss_seidel = ttk.Radiobutton(mainframe, text="Gauss Seidel",variable=test.getIterFunc(), value="Gauss Seidel")
+jacobi.grid(column=2,row=1)
+gauss_seidel.grid(column=3, row=1)
 
+# --- Error Selection Widgets --- #
+error = ttk.Combobox(mainframe, textvariable=test.getErrFunc(), state=["readonly"],
+                     width=25)
+error['values'] = ("Mean Absolute Approximate Error",
+                "Approximate Root Mean Square Error",
+                "True Mean Asbolute Error",
+                "True Root Mean Square Error")
+error.grid(column=2, row =2)
 
+# === Initial Approximates === #
+# Frame holding vector entries; 
+# Used to delete and replace vector when size changes #
+vector_frame= ttk.Frame(mainframe, relief='raised')
+vector_frame.grid(column=3,row=4)
 
+# Retrieve column and row for widget
+def locate(widget):
+    widgInfo = widget.grid_info() 
+    return [widgInfo[k] for k in ('row','column')]
 
+# Create a row of entries of size N inside of a frame/window
+def createRow(parent, size: int, r_offset: int, c_offset: int):
+    entry_row = []
+    for i in range(size):
+        ttk.Entry(parent, width=5).grid(row=r_offset, column=c_offset + i)
 
+# Create a vector out of initial approximates
+# Parent widget(frame) must only contain widgets
+def getEntryRow(size: int, parent) -> Sequence[float]:
+    row = []
+    for entry in parent.winfo_children():
+        print(entry.get())
+        row.append(entry.get())
+    return row
 
+createRow(vector_frame,3,*locate(vector_frame))
 
+def recreateRow(parent, size: int):
+    r_offset, c_offset= locate(parent)
+    for entry in parent.winfo_children():
+        entry.destroy()
+    createRow(parent,size,r_offset, c_offset)
 
-
-
-
-
-
+recreateRow(vector_frame, 3)
 
 root.mainloop() # Start event loop
